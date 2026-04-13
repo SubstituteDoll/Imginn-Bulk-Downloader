@@ -37,7 +37,7 @@ browser.runtime.onMessage.addListener((msg) => {
         return (async () => {
             const urls = (msg.urls || []).map(normalizeUrl).filter(Boolean);
             state.queue = urls;
-            state.tabId = await getActiveTabId();
+            state.tabId = await getOrCreateRunnableTabId();
             state.running = true;
             return { ok: true, remaining: state.queue.length };
         })();
