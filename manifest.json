@@ -13,5 +13,7 @@
 
   "action": {
     "default_popup": "app.html"
-  }
+  },
+
+  "permissions": ["tabs"]
 }
