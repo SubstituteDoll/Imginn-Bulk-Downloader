@@ -71,8 +71,8 @@ browser.runtime.onMessage.addListener((msg) => {
     if (msg?.type === "STOP") {
         state.running = false;
         state.queue = [];
+        state.visited = [];
         state.tabId = null;
-        // keep visited for the session
         return Promise.resolve({ ok: true });
     }
 

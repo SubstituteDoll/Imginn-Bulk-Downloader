@@ -6,11 +6,10 @@ const els = {
     urls: $("urls"),
     start: $("start"),
     next: $("next"),
-    stop: $("stop"),
-    clear: $("clear"),
+    reset: $("reset"),
     count: $("count"),
     progress: $("progress"),
-    download: $("download") // unused for now, but exists in HTML
+    download: $("download")
 };
 
 let visited = [];
@@ -38,7 +37,6 @@ function setTextareaUrls(urls) {
 function setUI({ running, progressText }) {
     els.start.disabled = running;
     els.next.disabled = !running;
-    els.stop.disabled = !running;
     // download stays disabled until we implement that feature
     els.download.disabled = true;
 
@@ -46,13 +44,6 @@ function setUI({ running, progressText }) {
 }
 
 els.urls.addEventListener("input", updateCount);
-
-els.clear.addEventListener("click", () => {
-    els.urls.value = "";
-    visited = [];
-    updateCount();
-    els.progress.textContent = "Idle";
-});
 
 els.start.addEventListener("click", async () => {
     const urls = parseUrls(els.urls.value);
@@ -103,9 +94,16 @@ els.next.addEventListener("click", async () => {
     els.progress.textContent = `Loaded. ${res.remaining} remaining.`;
 });
 
-els.stop.addEventListener("click", async () => {
-    await browser.runtime.sendMessage({ type: "STOP" });
-    setUI({ running: false, progressText: "Stopped." });
+els.reset.addEventListener("click", async () => {
+    // Stop background run (safe even if not running)
+    await browser.runtime.sendMessage({ type: "STOP" }).catch(() => { });
+
+    // Clear popup UI
+    els.urls.value = "";
+    visited = [];
+    updateCount();
+
+    setUI({ running: false, progressText: "Idle" });
 });
 
 // Initial state
