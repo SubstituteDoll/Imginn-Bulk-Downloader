@@ -135,7 +135,7 @@ body {
 }
 
 .btn-next {
-    border-color: rgba(68, 220, 139, .65);
+    border-color: var(--accent2);
     background: linear-gradient(180deg, rgba(68, 220, 139, .95), rgba(68, 220, 139, .70));
 }
 
