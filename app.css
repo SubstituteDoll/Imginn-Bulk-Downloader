@@ -1,5 +1,7 @@
 :root {
     --bg: #0b1220;
+    --accent: #51ccbb;
+    --accent2: #44dc8b;
     --card: rgba(255, 255, 255, .06);
     --text: rgba(255, 255, 255, .92);
     --muted: rgba(255, 255, 255, .68);
@@ -15,7 +17,8 @@
     box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
     margin: 0;
     padding: 0;
     background:
@@ -92,8 +95,8 @@ html, body {
 }
 
 .textarea:focus {
-    border-color: rgba(167, 139, 250, .55);
-    box-shadow: 0 0 0 3px rgba(124, 58, 237, .22);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(81, 204, 187, .22);
 }
 
 .actions {
@@ -120,11 +123,23 @@ html, body {
 
 .btn-primary {
     flex: 1;
-    border-color: rgba(124, 58, 237, .55);
-    background: linear-gradient(180deg, rgba(124, 58, 237, .95), rgba(124, 58, 237, .70));
+    border-color: color-mix(in srgb, var(--accent) 65%, transparent);
+    background: linear-gradient(180deg,
+            color-mix(in srgb, var(--accent) 95%, white),
+            color-mix(in srgb, var(--accent) 70%, transparent));
 }
 
+
 .btn-primary:hover {
+    filter: brightness(1.05);
+}
+
+.btn-next {
+    border-color: var(--accent2);
+    background: linear-gradient(180deg, rgba(68, 220, 139, .95), rgba(68, 220, 139, .70));
+}
+
+.btn-next:hover {
     filter: brightness(1.05);
 }
 
