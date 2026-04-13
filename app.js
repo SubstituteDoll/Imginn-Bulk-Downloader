@@ -9,6 +9,7 @@ const els = {
     reset: $("reset"),
     count: $("count"),
     progress: $("progress"),
+    visitedCount: $("visitedCount"),
     download: $("download") // Not implemented yet
 };
 
@@ -29,6 +30,10 @@ function updateCount() {
     els.count.textContent = String(parseUrls(els.urls.value).length);
 }
 
+function updateVisitedCount() {
+    els.visitedCount.textContent = String(visited.length);
+}
+
 function setTextareaUrls(urls) {
     els.urls.value = urls.join("\n");
     updateCount();
@@ -37,7 +42,7 @@ function setTextareaUrls(urls) {
 function setUI({ running, progressText }) {
     els.start.disabled = running;
     els.next.disabled = !running;
-    
+
     // download stays disabled until we implement that feature
     els.download.disabled = true;
 
@@ -57,6 +62,7 @@ els.start.addEventListener("click", async () => {
     }
 
     visited = [];
+    updateVisitedCount();
     setTextareaUrls(urls); // normalize + remove blank lines visibly
 
     const res = await browser.runtime.sendMessage({ type: "START", urls });
@@ -93,6 +99,7 @@ els.next.addEventListener("click", async () => {
     }
 
     if (consumed) visited.push(consumed);
+    updateVisitedCount();
     setTextareaUrls(currentUrls);
 
     els.progress.textContent = `Loaded. ${res.remaining} remaining.`;
@@ -105,6 +112,7 @@ els.reset.addEventListener("click", async () => {
     // Clear popup UI
     els.urls.value = "";
     visited = [];
+    updateVisitedCount();
     updateCount();
 
     setUI({ running: false, progressText: "Idle" });
@@ -124,6 +132,7 @@ async function restoreFromBackground() {
 
     // Restore local visited for later UI work
     visited = res.visited || [];
+    updateVisitedCount();
 
     if (res.running) {
         setUI({ running: true, progressText: `Ready (${(res.queue || []).length} in queue).` });
