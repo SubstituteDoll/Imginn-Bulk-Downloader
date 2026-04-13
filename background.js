@@ -72,7 +72,7 @@ browser.runtime.onMessage.addListener((msg) => {
         state.running = false;
         state.queue = [];
         state.tabId = null;
-        // keep visited for the session unless you prefer to clear it too
+        // keep visited for the session
         return Promise.resolve({ ok: true });
     }
 
