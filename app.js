@@ -65,7 +65,7 @@ els.start.addEventListener("click", async () => {
         return;
     }
 
-    setUI({ running: true, progressText: `Ready (${res.remaining} in queue). Click Next URL.` });
+    setUI({ running: true, progressText: `Ready (${res.remaining} in queue).` });
 });
 
 els.next.addEventListener("click", async () => {
