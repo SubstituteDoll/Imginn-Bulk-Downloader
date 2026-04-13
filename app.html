@@ -29,19 +29,19 @@
       ></textarea>
 
       <div class="actions">
-        <button class="btn btn-primary" type="button">Start</button>
-        <button class="btn btn-ghost" type="button" disabled>Download selected</button>
-        <button class="btn btn-ghost" type="button" disabled>Next URL</button>
-        <button class="btn btn-ghost" type="button" disabled>Stop</button>
-        <button class="btn btn-ghost" type="button">Clear</button>
+        <button id="start" class="btn btn-primary" type="button">Start</button>
+        <button class="btn btn-ghost" type="button" disabled>Download selected</button> <!-- Not implemented yet -->
+        <button id="next" class="btn btn-ghost" type="button" disabled>Next URL</button>
+        <button id="stop" class="btn btn-ghost" type="button" disabled>Stop</button>
+        <button id="clear" class="btn btn-ghost" type="button">Clear</button>
       </div>
 
-      <div class="preview" aria-label="Preview area">
+      <div id="preview" class="preview" aria-label="Preview area">
         <p class="preview-empty">Previews will appear here after you load a URL.</p>
       </div>
 
       <div class="status">
-        <span>0</span> URLs ready • <span>Idle</span>
+        <span id="count">0</span> URLs ready • <span id="progress">Idle</span>
       </div>
 
       <p class="hint">URLs without a protocol will be treated as https://</p>
