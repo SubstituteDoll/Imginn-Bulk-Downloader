@@ -13,16 +13,16 @@ let state = {
 // }
 
 async function getOrCreateRunnableTabId() {
-  const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
-  const url = tab?.url || "";
+    const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+    const url = tab?.url || "";
 
-  // about:newtab / about:home / about:blank etc. are not safe to drive in Firefox
-  if (!tab?.id || url.startsWith("about:")) {
-    const created = await browser.tabs.create({ url: "about:blank", active: true });
-    return created.id;
-  }
+    // about:newtab / about:home / about:blank etc. are not safe to drive in Firefox
+    if (!tab?.id || url.startsWith("about:")) {
+        const created = await browser.tabs.create({ url: "about:blank", active: true });
+        return created.id;
+    }
 
-  return tab.id;
+    return tab.id;
 }
 
 function normalizeUrl(s) {
@@ -36,9 +36,12 @@ browser.runtime.onMessage.addListener((msg) => {
     if (msg?.type === "START") {
         return (async () => {
             const urls = (msg.urls || []).map(normalizeUrl).filter(Boolean);
+
             state.queue = urls;
+            state.visited = [];
             state.tabId = await getOrCreateRunnableTabId();
             state.running = true;
+
             return { ok: true, remaining: state.queue.length };
         })();
     }
@@ -50,11 +53,18 @@ browser.runtime.onMessage.addListener((msg) => {
             const next = state.queue.shift();
             if (!next) {
                 state.running = false;
-                return { ok: true, done: true, remaining: 0 };
+                return { ok: true, done: true, remaining: 0, consumedUrl: null };
             }
 
+            state.visited.push(next);
             await browser.tabs.update(state.tabId, { url: next });
-            return { ok: true, done: false, remaining: state.queue.length, url: next };
+
+            return {
+                ok: true,
+                done: false,
+                remaining: state.queue.length,
+                consumedUrl: next
+            };
         })();
     }
 
@@ -62,6 +72,7 @@ browser.runtime.onMessage.addListener((msg) => {
         state.running = false;
         state.queue = [];
         state.tabId = null;
+        // keep visited for the session unless you prefer to clear it too
         return Promise.resolve({ ok: true });
     }
 
@@ -69,7 +80,12 @@ browser.runtime.onMessage.addListener((msg) => {
         return Promise.resolve({
             ok: true,
             running: state.running,
-            remaining: state.queue.length
+            remaining: state.queue.length,
+            visitedCount: state.visited.length
         });
+    }
+
+    if (msg?.type === "GET_VISITED") {
+        return Promise.resolve({ ok: true, visited: state.visited.slice() });
     }
 });
