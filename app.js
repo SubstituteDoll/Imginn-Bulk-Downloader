@@ -71,7 +71,7 @@ els.start.addEventListener("click", async () => {
         return;
     }
 
-    setUI({ running: true, progressText: `Ready (${res.remaining} in queue).` });
+    setUI({ running: true, progressText: "Ready" });
 });
 
 els.next.addEventListener("click", async () => {
@@ -102,7 +102,7 @@ els.next.addEventListener("click", async () => {
     updateVisitedCount();
     setTextareaUrls(currentUrls);
 
-    els.progress.textContent = `Loaded. ${res.remaining} remaining.`;
+    els.progress.textContent = "Loaded";
 });
 
 els.reset.addEventListener("click", async () => {
@@ -135,7 +135,7 @@ async function restoreFromBackground() {
     updateVisitedCount();
 
     if (res.running) {
-        setUI({ running: true, progressText: `Ready (${(res.queue || []).length} in queue).` });
+        setUI({ running: true, progressText: "Ready" });
     } else {
         setUI({ running: false, progressText: "Idle" });
     }
