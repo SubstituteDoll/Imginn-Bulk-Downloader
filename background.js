@@ -135,4 +135,16 @@ browser.runtime.onMessage.addListener((msg) => {
             return { ok: true, visited: state.visited.slice() };
         })();
     }
+
+    if (msg?.type === "GET_STATE") {
+        return (async () => {
+            await ensureStateLoaded();
+            return {
+                ok: true,
+                running: state.running,
+                queue: state.queue.slice(),
+                visited: state.visited.slice()
+            };
+        })();
+    }
 });
