@@ -1,6 +1,7 @@
 :root {
     --bg: #0b1220;
     --accent: #51ccbb;
+    --accent2: #44dc8b;
     --card: rgba(255, 255, 255, .06);
     --text: rgba(255, 255, 255, .92);
     --muted: rgba(255, 255, 255, .68);
