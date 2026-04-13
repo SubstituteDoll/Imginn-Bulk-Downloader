@@ -37,8 +37,12 @@ function setTextareaUrls(urls) {
 function setUI({ running, progressText }) {
     els.start.disabled = running;
     els.next.disabled = !running;
+    
     // download stays disabled until we implement that feature
     els.download.disabled = true;
+
+    // Lock textarea while running
+    els.urls.readOnly = running;
 
     if (progressText) els.progress.textContent = progressText;
 }
@@ -112,20 +116,20 @@ setUI({ running: false, progressText: "Idle" });
 
 // Restore state (Used on focus loss, pull state from background.js)
 async function restoreFromBackground() {
-  const res = await browser.runtime.sendMessage({ type: "GET_STATE" }).catch(() => null);
-  if (!res?.ok) return;
+    const res = await browser.runtime.sendMessage({ type: "GET_STATE" }).catch(() => null);
+    if (!res?.ok) return;
 
-  // Rebuild the textarea from remaining queue (consumed URLs are intentionally not shown)
-  setTextareaUrls(res.queue || []);
+    // Rebuild the textarea from remaining queue (consumed URLs are intentionally not shown)
+    setTextareaUrls(res.queue || []);
 
-  // Restore local visited for later UI work
-  visited = res.visited || [];
+    // Restore local visited for later UI work
+    visited = res.visited || [];
 
-  if (res.running) {
-    setUI({ running: true, progressText: `Ready (${(res.queue || []).length} in queue). Click Next URL.` });
-  } else {
-    setUI({ running: false, progressText: "Idle" });
-  }
+    if (res.running) {
+        setUI({ running: true, progressText: `Ready (${(res.queue || []).length} in queue). Click Next URL.` });
+    } else {
+        setUI({ running: false, progressText: "Idle" });
+    }
 }
 
 restoreFromBackground();

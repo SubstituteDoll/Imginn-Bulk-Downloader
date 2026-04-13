@@ -18,6 +18,7 @@
 }
 
 html,
+
 body {
     margin: 0;
     padding: 0;
@@ -186,4 +187,9 @@ body {
     margin: 8px 0 0 0;
     font-size: 11px;
     color: var(--muted2);
+}
+
+.textarea[readonly] {
+    opacity: .85;
+    cursor: not-allowed;
 }
