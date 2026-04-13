@@ -17,7 +17,8 @@
     box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
     margin: 0;
     padding: 0;
     background:
@@ -130,6 +131,15 @@ html, body {
 
 
 .btn-primary:hover {
+    filter: brightness(1.05);
+}
+
+.btn-next {
+    border-color: rgba(68, 220, 139, .65);
+    background: linear-gradient(180deg, rgba(68, 220, 139, .95), rgba(68, 220, 139, .70));
+}
+
+.btn-next:hover {
     filter: brightness(1.05);
 }
 
