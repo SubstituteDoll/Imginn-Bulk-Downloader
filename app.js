@@ -126,7 +126,7 @@ async function restoreFromBackground() {
     visited = res.visited || [];
 
     if (res.running) {
-        setUI({ running: true, progressText: `Ready (${(res.queue || []).length} in queue). Click Next URL.` });
+        setUI({ running: true, progressText: `Ready (${(res.queue || []).length} in queue).` });
     } else {
         setUI({ running: false, progressText: "Idle" });
     }
