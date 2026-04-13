@@ -9,7 +9,7 @@ const els = {
     reset: $("reset"),
     count: $("count"),
     progress: $("progress"),
-    download: $("download")
+    download: $("download") // Not implemented yet
 };
 
 let visited = [];
