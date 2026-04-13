@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "Imginn Bulk Downloader",
+  "version": "0.1",
+
+  "description": "From a list of Imginn URLs, prompts and downloads high-resolution version of the images from each page.",
+  "icons": {
+    "32": "icons/icon32.png",
+    "64": "icons/icon64.png"
+  },
+
+  "action": {
+    "default_popup": "app.html"
+  }
+}
