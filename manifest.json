@@ -9,6 +9,8 @@
     "64": "icons/icon64.png"
   },
 
+  "homepage_url": "https://github.com/SubstituteDoll/Imginn-Bulk-Downloader",
+
   "action": {
     "default_popup": "app.html"
   }
