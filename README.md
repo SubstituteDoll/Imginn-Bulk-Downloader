@@ -14,10 +14,10 @@ This add-on is tested for Firefox only. Theoretically, the WebExtension standard
     * It will load the link at the top and remove it from the list.
     * (unimplemented) The consumed links can be found in the small list at the bottom. If you want to go back for some reason, it should be there.
 4. (unimplemented) From the preview window, select the pictures the full versions of which you would like to download.
-5. Files will be saved into the Download folder under "(username)/POSTDATE-POSTTIME_N".
+5. (unimplemented) Files will be saved into the Download folder under "(username)/POSTDATE-POSTTIME_N".
     * Username is the username of the post
     * Post date and time are pulled from the post itself.
-6. !CRUCIAL! Check the download folder itself against the post webpage, and ensure that any and all pictures you would have liked to download are actually there.
+6. (unimplemented) !CRUCIAL! Check the download folder itself against the post webpage, and ensure that any and all pictures you would have liked to download are actually there.
 7. Push the "Next URL" button, and repeat the above steps until all links are done.
 
 ## Installation
