@@ -1,6 +1,7 @@
-- [ ] Consumed links list
-  * size is forced to be 1.5 lines, but the entire list is select and copyable just in case.
-  * The list should be populated from the oldest consumed link to the latest consumed link. 
+- [x] Consumed links list
+  * ~~size is forced to be 1.5 lines, but the entire list is select and copyable just in case.~~
+  * ~~The list should be populated from the last consumed link to the oldest consumed link.~~
+  * ~~"Visited URLs" label that disappears on cursor hover.~~
 
 - [ ] Pull post date
   * Post date is grabbable from the html directly
