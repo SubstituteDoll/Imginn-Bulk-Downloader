@@ -167,10 +167,13 @@ body {
     place-items: center;
     /* clicks go to the textarea */
     pointer-events: none;
-    color: rgba(255, 255, 255, 0.90);
+    color: rgba(255, 255, 255, 0.95);
     font-size: 12px;
     letter-spacing: 0.2px;
     z-index: 2;
+
+    /* animation to hide this watermark on hover */
+    transition: opacity 80ms ease, z-index 0ms linear 80ms;
 }
 
 .textarea-visited {
@@ -194,6 +197,9 @@ body {
     z-index: 1;
 
     color: rgba(255, 255, 255, 0.25);
+
+    /* animation to pop out the URLs on hover */
+    transition: color 80ms ease, z-index 0ms linear 80ms;
 }
 
 .textarea-visited[readonly] {
@@ -201,6 +207,16 @@ body {
     /* URLs are dimmed instead by textarea-visited in the color property */
 }
 
+/* Animation on hover: hide the watermark behind the URLs */
+.visited-wrap:hover .visited-watermark {
+    opacity: 0.15;
+    z-index: 0;
+}
+/* Animation on hover: pop out the URLs above the watermark */
+.visited-wrap:hover .textarea-visited {
+    color: rgba(255, 255, 255, 0.85);
+    z-index: 3;
+}
 
 .preview {
     margin-top: 10px;
