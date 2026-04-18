@@ -10,6 +10,7 @@ const els = {
     count: $("count"),
     progress: $("progress"),
     visitedCount: $("visitedCount"),
+    visitedField: $("visited"),
     download: $("download") // Not implemented yet
 };
 
@@ -52,6 +53,11 @@ function setUI({ running, progressText }) {
     if (progressText) els.progress.textContent = progressText;
 }
 
+function renderVisited() {
+    // Show latest visited first
+    els.visitedField.value = visited.slice().reverse().join("\n");
+}
+
 els.urls.addEventListener("input", updateCount);
 
 els.start.addEventListener("click", async () => {
@@ -63,6 +69,7 @@ els.start.addEventListener("click", async () => {
 
     visited = [];
     updateVisitedCount();
+    renderVisited();
     setTextareaUrls(urls); // normalize + remove blank lines visibly
 
     const res = await browser.runtime.sendMessage({ type: "START", urls });
@@ -100,6 +107,7 @@ els.next.addEventListener("click", async () => {
 
     if (consumed) visited.push(consumed);
     updateVisitedCount();
+    renderVisited();
     setTextareaUrls(currentUrls);
 
     els.progress.textContent = "Loaded";
@@ -113,6 +121,7 @@ els.reset.addEventListener("click", async () => {
     els.urls.value = "";
     visited = [];
     updateVisitedCount();
+    renderVisited();
     updateCount();
 
     setUI({ running: false, progressText: "Idle" });
@@ -120,6 +129,8 @@ els.reset.addEventListener("click", async () => {
 
 // Initial state
 updateCount();
+updateVisitedCount();
+renderVisited();
 setUI({ running: false, progressText: "Idle" });
 
 // Restore state (Used on focus loss, pull state from background.js)
@@ -130,9 +141,10 @@ async function restoreFromBackground() {
     // Rebuild the textarea from remaining queue (consumed URLs are intentionally not shown)
     setTextareaUrls(res.queue || []);
 
-    // Restore local visited for later UI work
+    // Restore local visited
     visited = res.visited || [];
     updateVisitedCount();
+    renderVisited();
 
     if (res.running) {
         setUI({ running: true, progressText: "Ready" });
