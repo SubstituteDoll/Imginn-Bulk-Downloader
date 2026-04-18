@@ -188,7 +188,8 @@ body {
     line-height: 1.35;
     height: calc(1.35em * 1.5);
 
-    padding: 0;
+    /* Padding will cut off text on the right at 3 px; intended behavior */
+    padding: 0 3px 0 3px;
     border: 0;
     background: rgba(0, 0, 0, .22);
     box-shadow: none;
