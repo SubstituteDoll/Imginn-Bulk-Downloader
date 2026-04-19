@@ -136,6 +136,19 @@ browser.runtime.onMessage.addListener((msg) => {
         })();
     }
 
+    if (msg?.type === "GET_POST_DATE") {
+        return (async () => {
+            const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+            if (!tab?.id) return { ok: false, error: "No active tab." };
+            try {
+                return await browser.tabs.sendMessage(tab.id, { type: "GET_POST_DATE" });
+            } catch (e) {
+                return { ok: false, error: String(e) };
+            }
+        })();
+    }
+
+
     if (msg?.type === "GET_STATE") {
         return (async () => {
             await ensureStateLoaded();
