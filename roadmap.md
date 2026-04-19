@@ -21,6 +21,8 @@
   * Appears on top of them when the active tab is not the run tab
   * Should not appear unless the addon has started
 
+- [ ] Hide preview window and the "Files will be saved as" from app.html before addon start
+
 - [ ] Download and display previews in the preview area on page load
   * the smaller version pics are directly accessible from the html
 
