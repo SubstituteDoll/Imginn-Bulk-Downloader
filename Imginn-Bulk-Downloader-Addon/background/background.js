@@ -45,14 +45,7 @@ async function debugSessionStorage() {
 
 async function getOrCreateRunnableTabId() {
     const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
-    const url = tab?.url || "";
-
-    // about:newtab / about:home / about:blank etc. are not safe to drive in Firefox
-    if (!tab?.id || url.startsWith("about:")) {
-        const created = await browser.tabs.create({ url: "about:blank", active: true });
-        return created.id;
-    }
-
+    if (!tab?.id) throw new Error("No active tab.");
     return tab.id;
 }
 
@@ -63,7 +56,50 @@ function normalizeUrl(s) {
     return `https://${t}`;
 }
 
-browser.runtime.onMessage.addListener((msg) => {
+function broadcastToPopup(message) {
+    browser.runtime.sendMessage(message).catch(() => { });
+}
+
+let lastRunTabStamp = null;
+
+async function publishRunTabPostDate() {
+    await ensureStateLoaded();
+    if (!state?.tabId) return;
+
+    try {
+        const res = await browser.tabs.sendMessage(state.tabId, { type: "GET_POST_DATE" });
+        if (res?.ok && res.stamp) {
+            broadcastToPopup({ type: "RUN_TAB_POST_DATE", stamp: res.stamp });
+        } else {
+            broadcastToPopup({ type: "RUN_TAB_POST_DATE", stamp: null });
+        }
+    } catch (e) {
+        // content script not ready / not injected / wrong page
+        broadcastToPopup({ type: "RUN_TAB_POST_DATE", stamp: null });
+    }
+}
+
+// listen for run tab load completion and then publish post date
+browser.tabs.onUpdated.addListener((tabId, info) => {
+    if (tabId !== state?.tabId) return;
+    if (info.status !== "complete") return;
+
+    // Run tab finished loading; now content script should exist (on imginn pages)
+    publishRunTabPostDate();
+});
+
+browser.runtime.onMessage.addListener((msg, sender) => {
+    // Content script can proactively tell us the stamp when it's actually ready
+    if (msg?.type === "POST_DATE_READY") {
+        // Only accept if it came from the run tab (prevents other tabs from spoofing UI)
+        const senderTabId = sender?.tab?.id;
+        if (senderTabId && senderTabId === state?.tabId && msg.stamp) {
+            lastRunTabStamp = msg.stamp;
+            broadcastToPopup({ type: "RUN_TAB_POST_DATE", stamp: msg.stamp });
+        }
+        return;
+    }
+
     if (msg?.type === "START") {
         return (async () => {
             await ensureStateLoaded();
@@ -75,7 +111,12 @@ browser.runtime.onMessage.addListener((msg) => {
             state.tabId = await getOrCreateRunnableTabId();
             state.running = true;
 
+            lastRunTabStamp = null;
             await saveState();
+
+            // clear filename until a real page loads
+            broadcastToPopup({ type: "RUN_TAB_POST_DATE", stamp: null });
+
             return { ok: true, remaining: state.queue.length };
         })();
     }
@@ -90,11 +131,17 @@ browser.runtime.onMessage.addListener((msg) => {
             if (!next) {
                 state.running = false;
                 await saveState();
+                // Clear file name when done
+                broadcastToPopup({ type: "RUN_TAB_POST_DATE", stamp: null });
+                lastRunTabStamp = null;
                 return { ok: true, done: true, remaining: 0, consumedUrl: null };
             }
 
             state.visited.push(next);
             await saveState();
+
+            // clear filename immediately; it will be updated on tabs.onUpdated complete
+            broadcastToPopup({ type: "RUN_TAB_POST_DATE", stamp: null });
 
             await browser.tabs.update(state.tabId, { url: next });
 
@@ -110,7 +157,13 @@ browser.runtime.onMessage.addListener((msg) => {
             state.queue = [];
             state.visited = [];
             state.tabId = null;
+
+            lastRunTabStamp = null;
             await saveState();
+
+            // clear filename on reset
+            broadcastToPopup({ type: "RUN_TAB_POST_DATE", stamp: null });
+
             return { ok: true };
         })();
     }
@@ -136,6 +189,23 @@ browser.runtime.onMessage.addListener((msg) => {
         })();
     }
 
+    if (msg?.type === "GET_POST_DATE") {
+        return (async () => {
+            await ensureStateLoaded();
+
+            const t = await browser.tabs.get(state.tabId);
+            console.log("GET_POST_DATE querying run tab:", state.tabId, t?.url);
+
+            if (!state?.tabId) return { ok: false, error: "No run tab yet." };
+            try {
+                return await browser.tabs.sendMessage(state.tabId, { type: "GET_POST_DATE" });
+            } catch (e) {
+                return { ok: false, error: String(e) };
+            }
+        })();
+    }
+
+
     if (msg?.type === "GET_STATE") {
         return (async () => {
             await ensureStateLoaded();
@@ -143,7 +213,8 @@ browser.runtime.onMessage.addListener((msg) => {
                 ok: true,
                 running: state.running,
                 queue: state.queue.slice(),
-                visited: state.visited.slice()
+                visited: state.visited.slice(),
+                lastRunTabStamp
             };
         })();
     }

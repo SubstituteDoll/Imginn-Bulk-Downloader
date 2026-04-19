@@ -19,5 +19,18 @@
     "scripts": ["background/background.js"]
   },
 
-  "permissions": ["tabs", "storage"]
+  "permissions": ["tabs", "storage"],
+
+  "host_permissions": [
+    "*://imginn.com/*",
+    "*://*.imginn.com/*"
+  ],
+
+  "content_scripts": [
+    {
+      "matches": ["*://imginn.com/*", "*://*.imginn.com/*"],
+      "js": ["content/post_date.js"],
+      "run_at": "document_idle"
+    }
+  ]
 }
