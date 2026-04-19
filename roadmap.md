@@ -5,6 +5,7 @@
 
 - [x] Pull post date
   * ~~Post date is grabbable from the html directly~~
+  * Add post date pulling information UI message
 
 - [ ] Display post date in the popup ui
   * ~~Between the Previews and the Download Button~~
