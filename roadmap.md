@@ -7,7 +7,8 @@
   * ~~Post date is grabbable from the html directly~~
 
 - [ ] Display post date in the popup ui
-  * Between the Previews and the Download Button
+  * ~~Between the Previews and the Download Button~~
+  * fix: issue #19
 
 - [ ] Download and display previews in the preview area on page load
   * the smaller version pics are directly accessible from the html
