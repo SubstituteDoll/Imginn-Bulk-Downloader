@@ -25,5 +25,5 @@
   * Save filenames by POSTDATE-POSTTIME_N.jpg or .webp
   * N is the downloaded index, which is separate from the real post's selected index, and is instead just a counter of the downloaded pictures
 
-- [ ] Possibly: Sownloaded picture metadata editing
+- [ ] Possibly: Downloaded picture metadata editing
   * Add exif data as the post date and time
