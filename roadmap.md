@@ -3,8 +3,8 @@
   * ~~The list should be populated from the last consumed link to the oldest consumed link.~~
   * ~~"Visited URLs" label that disappears on cursor hover.~~
 
-- [ ] Pull post date
-  * Post date is grabbable from the html directly
+- [x] Pull post date
+  * ~~Post date is grabbable from the html directly~~
 
 - [ ] Display post date in the popup ui
   * Between the Previews and the Download Button
