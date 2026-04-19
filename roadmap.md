@@ -6,6 +6,11 @@
 - [x] Pull post date
   * ~~Post date is grabbable from the html directly~~
   * Add post date pulling information UI message
+    * "Post date successfully recognized" on a successful div.post-time grab
+    * "Post date alternative pulled from <time> element"
+    * "Post date alternative pulled from some time attribute"
+    * "Post date alternative pulled from HTML metadata"
+    * "Post date recognition failure" (which removes the "file name" message)
 
 - [ ] Display post date in the popup ui
   * ~~Between the Previews and the Download Button~~
