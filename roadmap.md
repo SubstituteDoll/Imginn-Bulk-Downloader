@@ -3,11 +3,25 @@
   * ~~The list should be populated from the last consumed link to the oldest consumed link.~~
   * ~~"Visited URLs" label that disappears on cursor hover.~~
 
-- [ ] Pull post date
-  * Post date is grabbable from the html directly
+- [x] Pull post date
+  * ~~Post date is grabbable from the html directly~~
+  * Add post date pulling information UI message
+    * "Post date successfully recognized" on a successful div.post-time grab
+    * "Post date alternative pulled from <time> element"
+    * "Post date alternative pulled from some time attribute"
+    * "Post date alternative pulled from HTML metadata"
+    * "Post date recognition failure" (which removes the "file name" message)
 
 - [ ] Display post date in the popup ui
-  * Between the Previews and the Download Button
+  * ~~Between the Previews and the Download Button~~
+  * fix: issue #19
+
+- [ ] Not on the run tab indicator
+  * Locks the start and next buttons
+  * Appears on top of them when the active tab is not the run tab
+  * Should not appear unless the addon has started
+
+- [ ] Hide preview window and the "Files will be saved as" from app.html before addon start
 
 - [ ] Download and display previews in the preview area on page load
   * the smaller version pics are directly accessible from the html
