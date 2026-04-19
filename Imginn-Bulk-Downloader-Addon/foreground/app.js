@@ -11,6 +11,7 @@ const els = {
     progress: $("progress"),
     visitedCount: $("visitedCount"),
     visitedField: $("visited"),
+    filePattern: $("filePattern"),
     download: $("download") // Not implemented yet
 };
 
@@ -58,6 +59,19 @@ function renderVisited() {
     els.visitedField.value = visited.slice().reverse().join("\n");
 }
 
+// Deprecated in favor of acting on background's broadcast,
+// but left alive for debugging purposes
+async function refreshFilePattern() {
+    const res = await browser.runtime.sendMessage({ type: "GET_POST_DATE" }).catch(() => null);
+
+    if (!res?.ok || !res.stamp) {
+        els.filePattern.textContent = "—";
+        return;
+    }
+
+    els.filePattern.textContent = `${res.stamp}_N`;
+}
+
 els.urls.addEventListener("input", updateCount);
 
 els.start.addEventListener("click", async () => {
@@ -78,6 +92,9 @@ els.start.addEventListener("click", async () => {
         return;
     }
 
+    // clear filename immediately; background will broadcast when page loads
+    els.filePattern.textContent = "—";
+
     setUI({ running: true, progressText: "Ready" });
 });
 
@@ -91,6 +108,8 @@ els.next.addEventListener("click", async () => {
 
     if (res.done) {
         setUI({ running: false, progressText: "Done. Queue finished." });
+        // clear filename when done
+        els.filePattern.textContent = "—";
         return;
     }
 
@@ -110,6 +129,9 @@ els.next.addEventListener("click", async () => {
     renderVisited();
     setTextareaUrls(currentUrls);
 
+    // clear filename while the next page is loading; background will broadcast stamp
+    els.filePattern.textContent = "—";
+
     els.progress.textContent = "Loaded";
 });
 
@@ -124,7 +146,16 @@ els.reset.addEventListener("click", async () => {
     renderVisited();
     updateCount();
 
+    // clear filename on reset
+    els.filePattern.textContent = "—";
+
     setUI({ running: false, progressText: "Idle" });
+});
+
+browser.runtime.onMessage.addListener((msg) => {
+    if (msg?.type === "RUN_TAB_POST_DATE") {
+        els.filePattern.textContent = msg.stamp ? `${msg.stamp}_N` : "—";
+    }
 });
 
 // Initial state
@@ -132,6 +163,9 @@ updateCount();
 updateVisitedCount();
 renderVisited();
 setUI({ running: false, progressText: "Idle" });
+
+// don't poll GET_POST_DATE on popup open; background broadcast is the source of truth
+// refreshFilePattern();
 
 // Restore state (Used on focus loss, pull state from background.js)
 async function restoreFromBackground() {
@@ -145,6 +179,9 @@ async function restoreFromBackground() {
     visited = res.visited || [];
     updateVisitedCount();
     renderVisited();
+
+    // clear filename on restore; background will broadcast when run tab loads an imginn page
+    els.filePattern.textContent = "—";
 
     if (res.running) {
         setUI({ running: true, progressText: "Ready" });
